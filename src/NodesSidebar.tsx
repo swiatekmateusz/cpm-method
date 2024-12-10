@@ -1,7 +1,7 @@
+import Tooltip from "rc-tooltip";
 import { ITaskError } from "./helpers";
-
+import "rc-tooltip/assets/bootstrap_white.css";
 export const NodesSidebar = ({
-  generalErrors,
   nodesArray,
   getErrors,
 }: {
@@ -10,25 +10,32 @@ export const NodesSidebar = ({
   getErrors: (node: number) => ITaskError[];
 }) => {
   return (
-    <div>
-      <h2>Available nodes</h2>
-      {generalErrors?.map((error, index) => (
-        <div key={index} className="error error-general">
-          {error.message}
-        </div>
-      ))}
-      {nodesArray?.map((node, index) => (
-        <div className="node-wrapper" key={index}>
-          <div className="node-preview">{node}</div>
-          <div>
-            {getErrors(node)?.map((error, index) => (
-              <div key={index} className="error">
-                {error.message}
-              </div>
-            ))}
+    <div style={{ margin: "1rem" }}>
+      <h2>Nodes</h2>
+      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+        {nodesArray?.map((node, index) => (
+          <div className="node-wrapper" key={index}>
+            {getErrors(node)?.length ? (
+              <Tooltip
+                placement="bottom"
+                overlay={
+                  <div>
+                    {getErrors(node)?.map((error, index) => (
+                      <div key={index} className="error">
+                        {error.message}
+                      </div>
+                    ))}
+                  </div>
+                }
+              >
+                <div className="node-preview node-preview-error">{node}</div>
+              </Tooltip>
+            ) : (
+              <div className="node-preview">{node}</div>
+            )}
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

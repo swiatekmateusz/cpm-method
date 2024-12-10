@@ -1,7 +1,7 @@
-import dagre, {GraphLabel} from "dagre";
-import {Edge, MarkerType, Node, Position} from "@xyflow/react";
-import {IResolvedWithCP, ITask} from "./types";
-import {borderColor, QuarterCircle} from "./components/QuarterCircle";
+import dagre, { GraphLabel } from "dagre";
+import { Edge, Node, MarkerType, Position } from "@xyflow/react";
+import { IResolvedWithCP, ITask } from "./types";
+import { borderColor, QuarterCircle } from "./components/QuarterCircle";
 
 export const autoPositionNodes = (
   nodes: Node[],
@@ -415,3 +415,36 @@ export function validateCPMNetwork(data: ITask[]): ITaskError[] {
 
   return errors;
 }
+
+// export function convertDefaultToReversedTasks(tasks: ITask[]): ITaskReversed[] {
+//   const tasksEndingAt: Record<number, ITask[]> = {};
+
+//   for (const t of tasks) {
+//     if (!tasksEndingAt[t.to]) {
+//       tasksEndingAt[t.to] = [];
+//     }
+//     if (!tasksEndingAt[t.from]) {
+//       tasksEndingAt[t.from] = [];
+//     }
+//   }
+
+//   for (const t of tasks) {
+//     if (!tasksEndingAt[t.to]) {
+//       tasksEndingAt[t.to] = [];
+//     }
+//   }
+
+//   for (const t of tasks) {
+//     tasksEndingAt[t.to].push(t);
+//   }
+
+//   return tasks.map((t) => {
+//     const predecessors = tasksEndingAt[t.from] || [];
+//     const precedingNames = predecessors.map((p) => p.name);
+//     return {
+//       name: t.name,
+//       duration: t.duration,
+//       precedingNames,
+//     };
+//   });
+// }

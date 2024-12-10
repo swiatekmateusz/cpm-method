@@ -18,11 +18,7 @@ import { autoPositionNodes, convertTasksToNodesAndEdges } from "./helpers";
 import { DownloadButton } from "./components/DownloadButton";
 import { ITask } from "./types";
 
-export default function FlowChart({
-  tasks,
-}: {
-  tasks: ITask[];
-}) {
+export default function FlowChart({ tasks }: { tasks: ITask[] }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [reactFlowInstance, setReactFlowInstance] =
@@ -31,12 +27,11 @@ export default function FlowChart({
   const [direction, setDirection] = useState<"TB" | "LR">("LR");
 
   useEffect(() => {
-    if (tasks?.length) {
-      const { edges: initialEdges, nodes: initialNodes } = convertTasksToNodesAndEdges(tasks);
-      if (initialEdges) setEdges(initialEdges);
-      if (initialNodes && initialEdges)
-        setNodes(autoPositionNodes(initialNodes, initialEdges));
-    }
+    const { edges: initialEdges, nodes: initialNodes } =
+      convertTasksToNodesAndEdges(tasks);
+    if (initialEdges) setEdges(initialEdges);
+    if (initialNodes && initialEdges)
+      setNodes(autoPositionNodes(initialNodes, initialEdges));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks]);
 
