@@ -4,16 +4,7 @@ export interface ITask {
   from: number;
   to: number;
 }
-export interface ITaskReversed {
-  name: string;
-  duration: number;
-  precedingNames: string[];
-};
-export interface ITaskReversedForm {
-  name: string;
-  duration: number;
-  precedingNames: string;
-};
+
 export interface ITaskResolved {
   node: number;
   earliest: number;
@@ -21,7 +12,16 @@ export interface ITaskResolved {
   slack: number;
 }
 
+export interface ITaskExtended extends ITask {
+  earliestStart: number;
+  earliestFinish: number;
+  latestStart: number;
+  latestFinish: number;
+  slack: number;
+}
+
 export interface IResolvedWithCP {
   resolved: ITaskResolved[];
   criticalPaths: ITask[][];
+  tasksWithTimes: ITaskExtended[];
 }

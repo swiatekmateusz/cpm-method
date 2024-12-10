@@ -14,14 +14,14 @@ import {
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/base.css";
-import { autoPositionNodes, convertReversedTasksToNodesAndEdges, convertTasksToNodesAndEdges } from "./helpers";
+import { autoPositionNodes, convertTasksToNodesAndEdges } from "./helpers";
 import { DownloadButton } from "./components/DownloadButton";
-import { ITask, ITaskReversed } from "./types";
+import { ITask } from "./types";
 
 export default function FlowChart({
   tasks,
 }: {
-  tasks: ITask[] | ITaskReversed[];
+  tasks: ITask[];
 }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
@@ -32,10 +32,7 @@ export default function FlowChart({
 
   useEffect(() => {
     if (tasks?.length) {
-      const { edges: initialEdges, nodes: initialNodes } =
-        "precedingNames" in tasks[0]
-          ? convertReversedTasksToNodesAndEdges(tasks as ITaskReversed[])
-          : convertTasksToNodesAndEdges(tasks as ITask[]);
+      const { edges: initialEdges, nodes: initialNodes } = convertTasksToNodesAndEdges(tasks);
       if (initialEdges) setEdges(initialEdges);
       if (initialNodes && initialEdges)
         setNodes(autoPositionNodes(initialNodes, initialEdges));

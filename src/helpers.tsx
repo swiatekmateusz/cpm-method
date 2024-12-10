@@ -1,7 +1,7 @@
-import dagre, { GraphLabel } from "dagre";
-import { Edge, Node, MarkerType, Position } from "@xyflow/react";
-import { IResolvedWithCP, ITask, ITaskReversed } from "./types";
-import { borderColor, QuarterCircle } from "./components/QuarterCircle";
+import dagre, {GraphLabel} from "dagre";
+import {Edge, MarkerType, Node, Position} from "@xyflow/react";
+import {IResolvedWithCP, ITask} from "./types";
+import {borderColor, QuarterCircle} from "./components/QuarterCircle";
 
 export const autoPositionNodes = (
   nodes: Node[],
@@ -41,18 +41,10 @@ export const autoPositionNodes = (
 };
 
 export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
-  const allNodes = Array.from(
-    new Set(tasks.flatMap((t) => [t.from, t.to]))
-  ).sort((a, b) => a - b);
+  const allNodes = Array.from(new Set(tasks.flatMap((t) => [t.from, t.to]))).sort((a, b) => a - b);
 
-  const outgoing: Record<
-    number,
-    { to: number; duration: number; task: ITask }[]
-  > = {};
-  const incoming: Record<
-    number,
-    { from: number; duration: number; task: ITask }[]
-  > = {};
+  const outgoing: Record<number, { to: number; duration: number; task: ITask }[]> = {};
+  const incoming: Record<number, { from: number; duration: number; task: ITask }[]> = {};
 
   for (const node of allNodes) {
     outgoing[node] = [];
@@ -75,7 +67,7 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
     for (const node of allNodes) {
       if (incoming[node].length > 0) {
         const newEarliest = Math.max(
-          ...incoming[node].map((e) => earliest[e.from] + e.duration)
+            ...incoming[node].map((e) => earliest[e.from] + e.duration)
         );
         if (newEarliest > earliest[node]) {
           earliest[node] = newEarliest;
@@ -99,7 +91,7 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
     for (const node of allNodes.slice().reverse()) {
       if (outgoing[node].length > 0) {
         const newLatest = Math.min(
-          ...outgoing[node].map((e) => latest[e.to] - e.duration)
+            ...outgoing[node].map((e) => latest[e.to] - e.duration)
         );
         if (newLatest < latest[node]) {
           latest[node] = newLatest;
@@ -121,9 +113,9 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
   });
 
   const criticalTasks = tasks.filter(
-    (t) =>
-      earliest[t.from] + t.duration === earliest[t.to] &&
-      latest[t.from] + t.duration === latest[t.to]
+      (t) =>
+          earliest[t.from] + t.duration === earliest[t.to] &&
+          latest[t.from] + t.duration === latest[t.to]
   );
 
   const critOutgoing: Record<number, ITask[]> = {};
@@ -197,14 +189,39 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
     }
   }
 
-  return { resolved, criticalPaths };
+  const tasksWithTimes = tasks.map((task) => {
+    const earliestStart = earliest[task.from];
+    const earliestFinish = earliestStart + task.duration;
+    const latestFinish = latest[task.to];
+    const latestStart = latestFinish - task.duration;
+    const slack = latestStart - earliestStart;
+
+    return {
+      ...task,
+      earliestStart,
+      earliestFinish,
+      latestStart,
+      latestFinish,
+      slack,
+    };
+  });
+
+  return {
+    resolved,
+    criticalPaths,
+    tasksWithTimes,
+  };
 }
+
 export function convertTasksToNodesAndEdges(tasks: ITask[]) {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   const uniqueNodeIds = new Set();
 
-  const { criticalPaths, resolved } = resolveCPM(tasks);
+  const { criticalPaths, tasksWithTimes, resolved } = resolveCPM(tasks);
+  console.log(criticalPaths)
+  console.log(tasksWithTimes)
+  console.log(resolved)
   tasks.forEach((task) => {
     if (!uniqueNodeIds.has(task.from)) {
       const { earliest, latest, slack } =
@@ -398,108 +415,3 @@ export function validateCPMNetwork(data: ITask[]): ITaskError[] {
 
   return errors;
 }
-
-// export function convertDefaultToReversedTasks(tasks: ITask[]): ITaskReversed[] {
-//   const tasksEndingAt: Record<number, ITask[]> = {};
-
-//   for (const t of tasks) {
-//     if (!tasksEndingAt[t.to]) {
-//       tasksEndingAt[t.to] = [];
-//     }
-//     if (!tasksEndingAt[t.from]) {
-//       tasksEndingAt[t.from] = [];
-//     }
-//   }
-
-//   for (const t of tasks) {
-//     if (!tasksEndingAt[t.to]) {
-//       tasksEndingAt[t.to] = [];
-//     }
-//   }
-
-//   for (const t of tasks) {
-//     tasksEndingAt[t.to].push(t);
-//   }
-
-//   return tasks.map((t) => {
-//     const predecessors = tasksEndingAt[t.from] || [];
-//     const precedingNames = predecessors.map((p) => p.name);
-//     return {
-//       name: t.name,
-//       duration: t.duration,
-//       precedingNames,
-//     };
-//   });
-// }
-
-export const convertReversedTasksToNodesAndEdges = (tasks: ITaskReversed[]) => {
-  const nodes: Node[] = [];
-  const edges: Edge[] = [];
-  // tasks.forEach((task) => {
-  //   if (!uniqueNodeIds.has(task.from)) {
-  //     const { earliest, latest, slack } =
-  //       resolved.find((n) => n.node === task.from) || {};
-  //     nodes.push({
-  //       id: String(task.from),
-  //       position: { x: 0, y: 0 },
-  //       data: {
-  //         label: (
-  //           <QuarterCircle
-  //             text1={`${task.from}`}
-  //             text2={`${latest || 0}`}
-  //             text3={`${earliest || 0}`}
-  //             text4={`${slack || 0}`}
-  //             isCritical={slack === 0 || false}
-  //           />
-  //         ),
-  //       },
-  //     });
-  //     uniqueNodeIds.add(task.from);
-  //   }
-  //   if (!uniqueNodeIds.has(task.to)) {
-  //     const { earliest, latest, slack } =
-  //       resolved.find((n) => n.node === task.to) || {};
-  //     nodes.push({
-  //       id: String(task.to),
-  //       position: { x: 0, y: 0 },
-  //       data: {
-  //         label: (
-  //           <QuarterCircle
-  //             text1={`${task.to}`}
-  //             text2={`${latest || 0}`}
-  //             text3={`${earliest || 0}`}
-  //             text4={`${slack || 0}`}
-  //             isCritical={slack === 0 || false}
-  //           />
-  //         ),
-  //       },
-  //     });
-  //     uniqueNodeIds.add(task.to);
-  //   }
-  //   const inCriticalPath = criticalPaths.some((path) =>
-  //     path.some((p) => p.name === task.name)
-  //   );
-
-  //   edges.push({
-  //     id: `e${task.from}-${task.to}`,
-  //     source: String(task.from),
-  //     target: String(task.to),
-  //     label: `${task.name} ${task.duration}`,
-  //     className: inCriticalPath ? "red" : "",
-  //     style: { stroke: inCriticalPath ? "red" : borderColor },
-  //     animated: true,
-  //     markerEnd: {
-  //       type: MarkerType.ArrowClosed,
-  //       color: inCriticalPath ? "red" : borderColor,
-  //       height: 15,
-  //       width: 15,
-  //     },
-  //   });
-  // });
-
-  return { nodes, edges };
-};
-
-export const validateReversedCPMNetwork = (
-  tasks: ITaskReversed[]
-): ITaskError[] => {};
