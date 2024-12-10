@@ -433,7 +433,71 @@ export function validateCPMNetwork(data: ITask[]): ITaskError[] {
 // }
 
 export const convertReversedTasksToNodesAndEdges = (tasks: ITaskReversed[]) => {
-  return { nodes: [], edges: [] };
+  const nodes: Node[] = [];
+  const edges: Edge[] = [];
+  // tasks.forEach((task) => {
+  //   if (!uniqueNodeIds.has(task.from)) {
+  //     const { earliest, latest, slack } =
+  //       resolved.find((n) => n.node === task.from) || {};
+  //     nodes.push({
+  //       id: String(task.from),
+  //       position: { x: 0, y: 0 },
+  //       data: {
+  //         label: (
+  //           <QuarterCircle
+  //             text1={`${task.from}`}
+  //             text2={`${latest || 0}`}
+  //             text3={`${earliest || 0}`}
+  //             text4={`${slack || 0}`}
+  //             isCritical={slack === 0 || false}
+  //           />
+  //         ),
+  //       },
+  //     });
+  //     uniqueNodeIds.add(task.from);
+  //   }
+  //   if (!uniqueNodeIds.has(task.to)) {
+  //     const { earliest, latest, slack } =
+  //       resolved.find((n) => n.node === task.to) || {};
+  //     nodes.push({
+  //       id: String(task.to),
+  //       position: { x: 0, y: 0 },
+  //       data: {
+  //         label: (
+  //           <QuarterCircle
+  //             text1={`${task.to}`}
+  //             text2={`${latest || 0}`}
+  //             text3={`${earliest || 0}`}
+  //             text4={`${slack || 0}`}
+  //             isCritical={slack === 0 || false}
+  //           />
+  //         ),
+  //       },
+  //     });
+  //     uniqueNodeIds.add(task.to);
+  //   }
+  //   const inCriticalPath = criticalPaths.some((path) =>
+  //     path.some((p) => p.name === task.name)
+  //   );
+
+  //   edges.push({
+  //     id: `e${task.from}-${task.to}`,
+  //     source: String(task.from),
+  //     target: String(task.to),
+  //     label: `${task.name} ${task.duration}`,
+  //     className: inCriticalPath ? "red" : "",
+  //     style: { stroke: inCriticalPath ? "red" : borderColor },
+  //     animated: true,
+  //     markerEnd: {
+  //       type: MarkerType.ArrowClosed,
+  //       color: inCriticalPath ? "red" : borderColor,
+  //       height: 15,
+  //       width: 15,
+  //     },
+  //   });
+  // });
+
+  return { nodes, edges };
 };
 
 export const validateReversedCPMNetwork = (
