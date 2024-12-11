@@ -55,7 +55,7 @@ export const Explanation = () => {
           <p>Where:</p>
           <ul>
             <li>
-              <strong>t</strong> - time
+              <strong>t</strong> - Node identifier
             </li>
             <li>
               <strong>
