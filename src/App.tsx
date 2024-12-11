@@ -3,6 +3,7 @@ import FlowChart from "./Flow";
 import { ITask } from "./types";
 import { TasksForm } from "./Form";
 import { GranttChart } from "./GranttChart";
+import { Explanation } from "./Explanation";
 
 export default function App() {
   const [userTasks, setUserTasks] = useState<ITask[]>([
@@ -18,27 +19,40 @@ export default function App() {
     { name: "J", duration: 2, from: 8, to: 9 },
   ]);
 
-  const [metodDefault, setMetodDefault] = useState(false);
+  const [metodDefault, setMetodDefault] = useState<
+    "explanation" | "data" | "chart"
+  >("explanation");
 
   return (
     <div className="app">
       <div>
-        <div className="checkbox-wrapper">
-          <label>Edit data</label>
-          <div className="checkbox-wrapper-25">
-            <input
-              type="checkbox"
-              checked={metodDefault}
-              onChange={() => {
-                setMetodDefault((prev) => !prev);
-              }}
-            />
+        <div className="menu">
+          <div
+            className={`menu-item ${
+              metodDefault === "explanation" ? "active" : ""
+            }`}
+            onClick={() => setMetodDefault("explanation")}
+          >
+            Explanation
           </div>
-          <label>Gantt Chart</label>
+          <div
+            className={`menu-item ${metodDefault === "data" ? "active" : ""}`}
+            onClick={() => setMetodDefault("data")}
+          >
+            Edit data
+          </div>
+          <div
+            className={`menu-item ${metodDefault === "chart" ? "active" : ""}`}
+            onClick={() => setMetodDefault("chart")}
+          >
+            Gantt Chart
+          </div>
         </div>
-        {!metodDefault ? (
+        {metodDefault === "explanation" && <Explanation />}
+        {metodDefault === "data" && (
           <TasksForm tasks={userTasks} setUserTasks={setUserTasks} />
-        ) : (
+        )}
+        {metodDefault === "chart" && (
           <GranttChart
             tasks={userTasks}
             // setUserTasks={setReversedTasks}

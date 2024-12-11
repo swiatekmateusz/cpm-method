@@ -1,6 +1,9 @@
 export const borderColor = "#3e3e3e";
 
-const getTextFontSize = (text: string) => {
+const getTextFontSize = (text: React.ReactNode) => {
+  if (typeof text !== "string") {
+    return "8px";
+  }
   if (text.length <= 1) {
     return "18px";
   }
@@ -22,6 +25,12 @@ export const QuarterCircle = ({
   text3 = "",
   text4 = "",
   isCritical = false,
+}: {
+  text1: React.ReactNode;
+  text2: React.ReactNode;
+  text3: React.ReactNode;
+  text4: React.ReactNode;
+  isCritical?: boolean;
 }) => {
   return (
     <div

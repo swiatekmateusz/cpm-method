@@ -62,7 +62,7 @@ export function GranttChart({ tasks }: { tasks: ITask[] }) {
         />
       </div>
       <div className="checkbox-wrapper">
-        <label>ASAP</label>
+        <label>ASAP (as soon as possible)</label>
         <div className="checkbox-wrapper-25">
           <input
             type="checkbox"
@@ -72,7 +72,7 @@ export function GranttChart({ tasks }: { tasks: ITask[] }) {
             }}
           />
         </div>
-        <label>ALAP</label>
+        <label>ALAP (as late as possible)</label>
       </div>
     </div>
   );
