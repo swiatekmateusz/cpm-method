@@ -59,14 +59,14 @@ export const Explanation = () => {
             </li>
             <li>
               <strong>
-                t<sup>0</sup>
+                t<sup>1</sup>
                 <sub>j</sub>
               </strong>{" "}
               - earliest start time
             </li>
             <li>
               <strong>
-                t<sup>1</sup>
+                t<sup>0</sup>
                 <sub>j</sub>
               </strong>{" "}
               - latest start time
