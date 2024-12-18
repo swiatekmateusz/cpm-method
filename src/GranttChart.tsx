@@ -32,7 +32,6 @@ export function GranttChart({ tasks }: { tasks: ITask[] }) {
       .filter((t) => t.to === task.from)
       .map((t) => t.name)
       .join(","),
-   ' <div>JEBAC OCZKA</div>'
   ]);
 
   const data = [columns, ...rows];
