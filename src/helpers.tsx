@@ -41,10 +41,18 @@ export const autoPositionNodes = (
 };
 
 export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
-  const allNodes = Array.from(new Set(tasks.flatMap((t) => [t.from, t.to]))).sort((a, b) => a - b);
+  const allNodes = Array.from(
+    new Set(tasks.flatMap((t) => [t.from, t.to]))
+  ).sort((a, b) => a - b);
 
-  const outgoing: Record<number, { to: number; duration: number; task: ITask }[]> = {};
-  const incoming: Record<number, { from: number; duration: number; task: ITask }[]> = {};
+  const outgoing: Record<
+    number,
+    { to: number; duration: number; task: ITask }[]
+  > = {};
+  const incoming: Record<
+    number,
+    { from: number; duration: number; task: ITask }[]
+  > = {};
 
   for (const node of allNodes) {
     outgoing[node] = [];
@@ -67,7 +75,7 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
     for (const node of allNodes) {
       if (incoming[node].length > 0) {
         const newEarliest = Math.max(
-            ...incoming[node].map((e) => earliest[e.from] + e.duration)
+          ...incoming[node].map((e) => earliest[e.from] + e.duration)
         );
         if (newEarliest > earliest[node]) {
           earliest[node] = newEarliest;
@@ -91,7 +99,7 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
     for (const node of allNodes.slice().reverse()) {
       if (outgoing[node].length > 0) {
         const newLatest = Math.min(
-            ...outgoing[node].map((e) => latest[e.to] - e.duration)
+          ...outgoing[node].map((e) => latest[e.to] - e.duration)
         );
         if (newLatest < latest[node]) {
           latest[node] = newLatest;
@@ -113,9 +121,9 @@ export function resolveCPM(tasks: ITask[]): IResolvedWithCP {
   });
 
   const criticalTasks = tasks.filter(
-      (t) =>
-          earliest[t.from] + t.duration === earliest[t.to] &&
-          latest[t.from] + t.duration === latest[t.to]
+    (t) =>
+      earliest[t.from] + t.duration === earliest[t.to] &&
+      latest[t.from] + t.duration === latest[t.to]
   );
 
   const critOutgoing: Record<number, ITask[]> = {};
@@ -218,10 +226,8 @@ export function convertTasksToNodesAndEdges(tasks: ITask[]) {
   const edges: Edge[] = [];
   const uniqueNodeIds = new Set();
 
-  const { criticalPaths, tasksWithTimes, resolved } = resolveCPM(tasks);
-  console.log(criticalPaths)
-  console.log(tasksWithTimes)
-  console.log(resolved)
+  const { criticalPaths, resolved } = resolveCPM(tasks);
+
   tasks.forEach((task) => {
     if (!uniqueNodeIds.has(task.from)) {
       const { earliest, latest, slack } =
