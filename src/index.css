@@ -320,3 +320,7 @@ body * {
 .big-quater .quarterStyle {
   font-size: 30px !important;
 }
+
+.bold {
+  font-weight: 700 !important; 
+}

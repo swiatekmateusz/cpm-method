@@ -64,6 +64,7 @@ const TasksFormInner = () => {
                         name={`tasks[${index}].name`}
                         label={index === 0 ? "Name" : ""}
                         disabled
+                        bold
                       />
                       <FormikInput
                         name={`tasks[${index}].duration`}
