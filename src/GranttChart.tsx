@@ -32,6 +32,7 @@ export function GranttChart({ tasks }: { tasks: ITask[] }) {
       .filter((t) => t.to === task.from)
       .map((t) => t.name)
       .join(","),
+      ''
   ]);
 
   const data = [columns, ...rows];
